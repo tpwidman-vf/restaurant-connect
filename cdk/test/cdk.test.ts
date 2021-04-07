@@ -10,3 +10,10 @@ test('Dynamo DB table Created', () => {
     expectCDK(stack).to(haveResource("AWS::DynamoDB::Table"));
 });
 
+test('S3 bucket created', () => {
+    const app = new cdk.App();
+    // WHEN
+    const stack = new Cdk.CdkStack(app, 'RestaurantConnectStack');
+    expectCDK(stack).to(haveResource("AWS::S3::Bucket"));
+});
+

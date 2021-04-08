@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
+import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 
 import { TableEncryption } from '@aws-cdk/aws-dynamodb';
@@ -36,9 +37,20 @@ export class CdkStack extends cdk.Stack {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.DESTROY,
     });
-
     // a Lambda function that gets granted access to the table would go here.  Along with any other lambdas
     // that might need to talk to it.
-
+    const createOrdersLambda = new lambda.Function(this, 'createOrders', {
+      functionName: "createOrders",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      environment: {
+        TABLE_NAME: tableName,
+        SERVICE_NAME: 'createOrders',
+        LOG_LEVEL: 'info',
+      },
+      code: lambda.Code.fromAsset('../packages/createOrder/dist'),
+      handler: 'index.handler',
+      timeout: cdk.Duration.seconds(60),
+      memorySize: 1024,
+    });
   }
 }

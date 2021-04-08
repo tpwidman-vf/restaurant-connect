@@ -17,3 +17,8 @@ test('S3 bucket created', () => {
     expectCDK(stack).to(haveResource("AWS::S3::Bucket"));
 });
 
+test('Lambda function created', () => {
+    const app = new cdk.App();
+    const stack = new Cdk.CdkStack(app, 'RestaurantConnectStack');
+    expectCDK(stack).to(haveResource("AWS::Lambda::Function"));
+})

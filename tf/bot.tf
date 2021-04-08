@@ -7,7 +7,7 @@ resource "aws_lex_bot" "order_food_bot" {
     locale                          = "en-US"
     name                            = "OrderIntake"
     nlu_intent_confidence_threshold = 0
-    process_behavior                = "SAVE"
+    process_behavior                = "BUILD"
     voice_id                        = "Salli"
 
     abort_statement {
@@ -28,11 +28,22 @@ resource "aws_lex_bot" "order_food_bot" {
 
     intent {
         intent_name    = "CheckOrderStatus"
-        intent_version = "3"
+        intent_version = "$LATEST"
     }
     intent {
         intent_name    = "GetFoodOrder"
-        intent_version = "6"
+        intent_version = "$LATEST"
     }
 
+}
+
+resource "aws_lex_bot_alias" "order_intake_connect" {
+  bot_name    = "OrderIntake"
+  bot_version = "1"
+  description = "Version of the OrderIntake bot to be used by a Connect instance. This protects against changes to $LATEST."
+  name        = "OrderIntakeConnect"
+}
+
+output "bot_arn" {
+    value = aws_lex_bot.order_food_bot.arn
 }

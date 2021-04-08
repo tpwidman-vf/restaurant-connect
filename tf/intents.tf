@@ -23,11 +23,6 @@ resource "aws_lex_intent" "get_food_order_intent" {
         }
     }
 
-    dialog_code_hook {
-        message_version = "1.0"
-        uri             = "arn:aws:lambda:us-east-1:252608137475:function:LexRestaurantOrder"
-    }
-
     rejection_statement {
         message {
             content      = "Okay, you're order will not be placed"
@@ -83,4 +78,8 @@ resource "aws_lex_intent" "get_food_order_intent" {
         }
     }
 
+}
+
+output "intents_arn" {
+    value = aws_lex_intent.get_food_order_intent.arn
 }

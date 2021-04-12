@@ -14,6 +14,9 @@ export class CdkStack extends cdk.Stack {
   // Orders table
   public readonly table: dynamodb.Table;
 
+  // Create orders lambda
+  public readonly createOrdersFunction: lambda.Function;
+
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -39,18 +42,33 @@ export class CdkStack extends cdk.Stack {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.DESTROY,
     });
-
     // a Lambda function that gets granted access to the table would go here.  Along with any other lambdas
     // that might need to talk to it.
-    const hello = new lambda.Function(this, 'rcHealthCheckEndpoint', {
-      runtime: lambda.Runtime.NODEJS_12_X, 
-      code: lambda.Code.fromAsset('lambda'),
-      handler: 'hello.handler'
+    const createOrdersLambda = new lambda.Function(this, 'createOrders', {
+      functionName: "createOrders",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      environment: {
+        TABLE_NAME: tableName,
+        SERVICE_NAME: 'createOrders',
+        LOG_LEVEL: 'info',
+      },
+      code: lambda.Code.fromAsset('../packages/createOrder/dist'),
+      handler: 'index.handler',
+      timeout: cdk.Duration.seconds(60),
+      memorySize: 1024,
     });
+    table.grantReadWriteData(createOrdersLambda);
+    this.createOrdersFunction = createOrdersLambda;
 
-    new apigw.LambdaRestApi(this, 'Endpoint', {
-      handler: hello
-    });
+    // const hello = new lambda.Function(this, 'rcHealthCheckEndpoint', {
+    //   runtime: lambda.Runtime.NODEJS_12_X, 
+    //   code: lambda.Code.fromAsset('lambda'),
+    //   handler: 'hello.handler'
+    // });
+
+    // new apigw.LambdaRestApi(this, 'Endpoint', {
+    //   handler: hello
+    // });
 
   }
 }

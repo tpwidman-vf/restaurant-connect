@@ -18,6 +18,7 @@ cd ../tf
 ../deploy/install-terraform.sh
 
 # download dependent terraform version
+./terraform init
 ./terraform plan
 ./terraform apply
 

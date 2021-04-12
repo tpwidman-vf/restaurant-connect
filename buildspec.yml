@@ -3,6 +3,9 @@ phases:
   install:
     runtime-versions:
       nodejs: 12
+    commands:
+      - npm install -g @aws-cdk
+      - npm install -g typescript
   pre_build:
     commands:
       - echo "Entered pre-build phase"

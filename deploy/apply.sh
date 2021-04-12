@@ -3,6 +3,11 @@ if ! [ -x "$(command -v cdk)" ]; then
   echo 'cdk is not installed, so I am installing it now.'
   npm install -g aws-cdk
 fi
+if ! [ -x "$(command -v typescript)" ]; then
+  echo 'cdk is not installed, so I am installing it now.'
+  npm install -g typescript
+fi
+
 
 cd cdk/
 

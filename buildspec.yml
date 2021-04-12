@@ -9,7 +9,7 @@ phases:
   build:
     commands:
       - echo "Entered build phase"
-      - bash/apply.sh
+      - bash deploy/apply.sh
   post_build:
     commands:
       - echo "Entered post-build phase"

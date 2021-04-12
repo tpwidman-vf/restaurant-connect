@@ -1,0 +1,15 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+  pre_build:
+    commands:
+      - echo "Entered pre-build phase"
+  build:
+    commands:
+      - echo "Entered build phase"
+      - bash deploy/apply.sh
+  post_build:
+    commands:
+      - echo "Entered post-build phase"

@@ -1,7 +1,9 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as apigw from '@aws-cdk/aws-apigateway';
+
 
 import { TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
@@ -52,5 +54,15 @@ export class CdkStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(60),
       memorySize: 1024,
     });
+    const hello = new lambda.Function(this, 'rcHealthCheckEndpoint', {
+      runtime: lambda.Runtime.NODEJS_12_X, 
+      code: lambda.Code.fromAsset('lambda'),
+      handler: 'hello.handler'
+    });
+
+    new apigw.LambdaRestApi(this, 'Endpoint', {
+      handler: hello
+    });
+
   }
 }

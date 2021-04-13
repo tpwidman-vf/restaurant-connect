@@ -52,5 +52,22 @@ export class CdkStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(60),
       memorySize: 1024,
     });
+
+
+    // getOrderStatus lambda function
+    const getOrderStatusLambda = new lambda.Function(this, 'getOrderStatusHandler', {
+      functionName: "getOrderStatus",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      environment: {
+        TABLE_NAME: tableName,
+        SERVICE_NAME: 'getOrderStatus',
+        LOG_LEVEL: 'info',
+      },
+      code: lambda.Code.fromAsset('../packages/getOrderStatus/dist'),
+      handler: 'index.handler',
+      timeout: cdk.Duration.seconds(7),
+      memorySize: 1024,
+    });
+
   }
 }

@@ -8,12 +8,13 @@
     "test": "test"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "tsc",
     "prepare": "rm -rf dist && ../../node_modules/.bin/webpack --mode production --config webpack.config.js",
     "test": "\"../../node_modules/.bin/tsdx test\","
   },
   "author": "tpwidman",
   "license": "ISC",
+  "type" : "module",
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",

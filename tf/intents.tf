@@ -18,7 +18,7 @@ resource "aws_lex_intent" "get_food_order_intent" {
         max_attempts = 3
 
         message {
-            content      = "Ok, I have you down for a \u200b{PizzaSize}\u200b \u200b{PizzaToppings}\u200b pizza"
+            content      = "Ok, I have you down for a \u200b{PizzaSize}\u200b \u200b{PizzaToppings}\u200b pizza for {CustomerName}  Is that correct?"
             content_type = "PlainText"
         }
     }
@@ -77,7 +77,21 @@ resource "aws_lex_intent" "get_food_order_intent" {
             }
         }
     }
+    slot {
+        name            = "CustomerName"
+        priority        = 3
+        slot_constraint   = "Required"
+        slot_type = "AMAZON.Person"
+        value_elicitation_prompt {
+            max_attempts = 2
 
+            message {
+                content      = "And what is the name for the order?"
+                content_type = "PlainText"
+            }
+        }
+        
+    }
 }
 
 output "intents_arn" {

@@ -1,6 +1,6 @@
 {
   "name": "createorder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
   "directories": {
@@ -14,7 +14,7 @@
   },
   "author": "tpwidman",
   "license": "ISC",
-  "type" : "module",
+  "type": "module",
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",

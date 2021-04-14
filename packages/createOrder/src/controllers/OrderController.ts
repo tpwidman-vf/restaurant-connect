@@ -30,6 +30,8 @@ export class OrderController {
             order.customer = params.Customer;
             order.orderId = id;
             await this.mapper.put(order);
+            this.sendOrderEmail(order);
+            this.sendOrderSns(order);
             return {
                 orderId: id,
                 orderStatus: status,
@@ -42,5 +44,13 @@ export class OrderController {
               );
               throw error;
         }
+    }
+
+    async sendOrderEmail(order: Order) {
+
+    }
+
+    async sendOrderSns(order: Order) {
+
     }
 }

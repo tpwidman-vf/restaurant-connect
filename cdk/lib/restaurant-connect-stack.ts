@@ -3,7 +3,9 @@ import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigw from '@aws-cdk/aws-apigateway';
-
+import * as sns from '@aws-cdk/aws-sns';
+import * as subs from '@aws-cdk/aws-sns-subscriptions';
+import * as sqs from '@aws-cdk/aws-sqs';
 
 import { TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
@@ -20,6 +22,15 @@ export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    const s3DynamoExportBucket = new s3.Bucket(this, 'dynamoExportBucket', {
+      versioned: true,
+      bucketName: 'vf-restaurant-connect-dynamo-export', 
+      encryption: BucketEncryption.KMS_MANAGED,
+      publicReadAccess: false,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+
     // DynamoDB orders table
     let tableName = 'Orders';
     const table = new dynamodb.Table(this, tableName, {
@@ -29,6 +40,7 @@ export class CdkStack extends cdk.Stack {
       },
       encryption: TableEncryption.AWS_MANAGED,
       tableName: tableName,
+      pointInTimeRecovery: true,
     });
     this.table = table;
 
@@ -60,15 +72,13 @@ export class CdkStack extends cdk.Stack {
     table.grantReadWriteData(createOrdersLambda);
     this.createOrdersFunction = createOrdersLambda;
 
-    // const hello = new lambda.Function(this, 'rcHealthCheckEndpoint', {
-    //   runtime: lambda.Runtime.NODEJS_12_X, 
-    //   code: lambda.Code.fromAsset('lambda'),
-    //   handler: 'hello.handler'
-    // });
+    const queue = new sqs.Queue(this, 'OrderQueue', {
+      visibilityTimeout: cdk.Duration.seconds(300)
+    });
 
-    // new apigw.LambdaRestApi(this, 'Endpoint', {
-    //   handler: hello
-    // });
+    const topic = new sns.Topic(this, 'OrderTopic');
+
+    topic.addSubscription(new subs.SqsSubscription(queue));
 
   }
 }

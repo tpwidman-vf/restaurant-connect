@@ -6,7 +6,7 @@ export default {
     transform: {
       '^.+\\.ts?$': 'ts-jest',
     },
-    testPathIgnorePatterns: ['/node_modules/', 'dist'],
+    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     // setupFiles: ["<rootDir>/.jest/setEnvVars.js"],
     coverageDirectory: 'coverage',
     moduleFileExtensions: [

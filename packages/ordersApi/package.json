@@ -1,0 +1,46 @@
+{
+  "name": "ordersapi",
+  "version": "1.0.0",
+  "description": "Lambda api for interacting with orders table in api-gw",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "tsc",
+    "local": "tsc --project tsconfig.local.json && node local-app/test/local",
+    "test": "\"../../node_modules/.bin/tsdx test\","
+  },
+  "author": "tpwidman",
+  "license": "ISC",
+  "dependencies": {
+    "@aws/dynamodb-data-mapper": "^0.7.3",
+    "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
+    "@types/aws-lambda": "^8.10.73",
+    "aws-sdk": "^2.881.0",
+    "inversify": "^5.0.5",
+    "lodash": "^4.17.21",
+    "pino": "^6.11.2",
+    "reflect-metadata": "^0.1.13",
+    "ts-lambda-api": "^2.2.3",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/jest": "^26.0.22",
+    "@types/lodash": "^4.14.168",
+    "@types/node": "^14.14.37",
+    "@types/pino": "^6.3.6",
+    "@types/uuid": "^8.3.0",
+    "jest": "^26.6.3",
+    "pino-pretty": "^4.7.1",
+    "ts-jest": "^26.5.4",
+    "ts-lambda-api-local": "^2.2.3",
+    "ts-loader": "^8.1.0",
+    "ts-node": "^9.1.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^4.6.0"
+  }
+}

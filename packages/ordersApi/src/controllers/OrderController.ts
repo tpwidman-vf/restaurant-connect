@@ -56,27 +56,25 @@ export class OrderController {
      * @param matchQueryParams 
      * @returns 
      */
-    private async queryOrdersTable(matchQueryParams: QueryStringParams) {
-        console.log(matchQueryParams);
+     private async queryOrdersTable(matchQueryParams: QueryStringParams) {
         let baseQueryObject: DocumentClient.ScanInput = {
-            TableName: process.env.TABLE_NAME || "Orders", 
-            ExpressionAttributeNames: {},
-            ExpressionAttributeValues: {}, 
-            FilterExpression: ""
+            TableName: process.env.TABLE_NAME || "Orders"
         };
-
-        let query: any = Object.keys(matchQueryParams)
-            .filter((key) => !isNil(matchQueryParams[key as keyof QueryStringParams]))
-            .reduce((prev: any, current): any => {
-                const value = matchQueryParams[current as keyof QueryStringParams];
-                prev.ExpressionAttributeNames[`#${current}`] = current;
-                prev.ExpressionAttributeValues[`:${current}Value`] = value;
-                prev.FilterExpression += (prev.FilterExpression === "") ? `#${current} = :${current}Value` : ` AND #${current} = :${current}Value`
-                console.log(prev);
-                return prev;
-            }, baseQueryObject);
-        console.log(query);
-        const result = await this.client.scan(query).promise();
+        if(Object.values(matchQueryParams).some(value => !isNil(value))){
+            baseQueryObject.ExpressionAttributeNames = {};
+            baseQueryObject.ExpressionAttributeValues = {};
+            baseQueryObject.FilterExpression = "";
+            Object.keys(matchQueryParams)
+                .filter((key) => !isNil(matchQueryParams[key as keyof QueryStringParams]))
+                .reduce((prev: any, current): any => {
+                    const value = matchQueryParams[current as keyof QueryStringParams];
+                    prev.ExpressionAttributeNames[`#${current}`] = current;
+                    prev.ExpressionAttributeValues[`:${current}Value`] = value;
+                    prev.FilterExpression += (prev.FilterExpression === "") ? `#${current} = :${current}Value` : ` AND #${current} = :${current}Value`
+                    return prev;
+                }, baseQueryObject);
+        }
+        const result = await this.client.scan(baseQueryObject).promise();
         return result;
     }
 

@@ -1,6 +1,7 @@
 import { injectable, inject } from "inversify"
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { v4 as uuid } from 'uuid';
 
 import { 
     apiController,
@@ -85,12 +86,9 @@ export class OrderController {
      */
     @POST("/")
     public async create(@body requestBody: RequestBody) {
-        if(!requestBody.createdAt){
-            requestBody.createdAt = new Date();
-        }
-        if(!requestBody.updatedAt){
-            requestBody.updatedAt = new Date();
-        }
+        requestBody.orderId = uuid();
+        requestBody.createdAt = new Date();
+        requestBody.updatedAt = new Date();
         return this.mapper.put(requestBody);
     }
 

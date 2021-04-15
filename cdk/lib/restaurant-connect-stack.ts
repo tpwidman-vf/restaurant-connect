@@ -7,7 +7,7 @@ import * as sns from '@aws-cdk/aws-sns';
 import * as subs from '@aws-cdk/aws-sns-subscriptions';
 import * as sqs from '@aws-cdk/aws-sqs';
 
-import { TableEncryption } from '@aws-cdk/aws-dynamodb';
+import { StreamViewType, TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
 import { RemovalPolicy } from '@aws-cdk/core';
 
@@ -40,7 +40,10 @@ export class CdkStack extends cdk.Stack {
       },
       encryption: TableEncryption.AWS_MANAGED,
       tableName: tableName,
+      // enable back ups for putting the table in s3 for ETL.
       pointInTimeRecovery: true,
+      // enable streaming for triggers.
+      stream: StreamViewType.NEW_IMAGE,
     });
     this.table = table;
 
@@ -62,7 +65,7 @@ export class CdkStack extends cdk.Stack {
       environment: {
         TABLE_NAME: tableName,
         SERVICE_NAME: 'createOrders',
-        LOG_LEVEL: 'info',
+        LOG_LEVEL: 'debug',
       },
       code: lambda.Code.fromAsset('../packages/createOrder/dist'),
       handler: 'index.handler',

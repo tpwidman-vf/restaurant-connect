@@ -66,6 +66,7 @@ export class CdkStack extends cdk.Stack {
         TABLE_NAME: tableName,
         SERVICE_NAME: 'createOrders',
         LOG_LEVEL: 'debug',
+        ORDERS_EMAIL: 'success@simulator.amazonses.com'
       },
       code: lambda.Code.fromAsset('../packages/createOrder/dist'),
       handler: 'index.handler',

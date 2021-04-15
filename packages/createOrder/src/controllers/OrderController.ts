@@ -51,7 +51,7 @@ export class OrderController {
         const ses = new aws.SES({ region: "us-east-1"});
         const params = {
             Destination: {
-                ToAddresses: ['success@simulator.amazonses.com'],
+                ToAddresses: [process.env.ORDERS_EMAIL],
             }, 
             Message: {
                 Body: {

@@ -18,7 +18,7 @@ resource "aws_lex_intent" "get_food_order_intent" {
         max_attempts = 3
 
         message {
-            content      = "Ok, I have you down for a \u200b{PizzaSize}\u200b \u200b{PizzaToppings}\u200b pizza"
+            content      = "Ok, I have you down for a \u200b{PizzaSize}\u200b \u200b{PizzaToppings}\u200b pizza. Is that correct?"
             content_type = "PlainText"
         }
     }

@@ -20,7 +20,7 @@ export const dependencyMockContainer: AsyncContainerModule = new AsyncContainerM
      */
     bind(constants.AWS_REGION).toConstantValue('us-east-1');
     bind(constants.LOG_LEVEL).toConstantValue('silent');
-    bind(constants.SERVICE_NAME).toConstantValue('createOrder');
+    bind(constants.SERVICE_NAME).toConstantValue('getOrderStatus');
     bind(constants.TABLE).toConstantValue('Orders');
 
     /**

@@ -3,7 +3,7 @@ import { Container } from 'inversify';
 import { ConnectEvent } from './types/connect/ConnectEvent';
 import container from './dependencyContainer';
 import { OrderController } from './controllers/OrderController';
-import { OrderResult } from './types/OrderResult';
+import { Order } from './models/OrdersTable';
 
 let cachedController: OrderController;
 
@@ -11,7 +11,7 @@ let cachedController: OrderController;
  * @description Return the cached controller if it's cached, if not
  *
  * @param cached
- * @returns {OrderController}
+ * @returns {GetOrderController}
  */
 const loadController = async (
   cached: OrderController
@@ -30,7 +30,7 @@ const loadController = async (
  */
 export const handler = async (
   event: ConnectEvent
-): Promise<OrderResult> => {
+): Promise<Order> => {
   // ProcessRoutes
   /**
    * Fetch controller
@@ -41,5 +41,5 @@ export const handler = async (
    * Start the execution
    */
 
-  return controller.create(event);
+  return controller.getOrderStatus(event);
 };

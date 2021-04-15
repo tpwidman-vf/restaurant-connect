@@ -89,7 +89,7 @@ export class OrderController {
         requestBody.orderId = uuid();
         requestBody.createdAt = new Date();
         requestBody.updatedAt = new Date();
-        return this.mapper.put(requestBody);
+        return this.mapper.put(Object.assign(new Order(), requestBody));
     }
 
     /**

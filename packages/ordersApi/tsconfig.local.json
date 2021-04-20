@@ -1,0 +1,22 @@
+{
+    "include": ["src", "types", "./test/local", "./test/mocks"],
+    "compilerOptions": {
+      "experimentalDecorators": true,
+      "target": "ESNext",
+      "forceConsistentCasingInFileNames": true,
+      "module": "CommonJS",
+      "lib": ["dom", "esnext"],
+      "importHelpers": true,
+      "declaration": false,
+      "sourceMap": true,
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "moduleResolution": "node",
+      "jsx": "react",
+      "esModuleInterop": true,
+      "outDir": "local-app"
+    }
+  }

@@ -50,6 +50,7 @@ export class OrderController {
             customer,
             orderStatus
         }
+        this.logger.info(matchQueryParams);
         return await this.queryOrdersTable(matchQueryParams);
     }
     /**
@@ -86,6 +87,7 @@ export class OrderController {
      */
     @POST("/")
     public async create(@body requestBody: RequestBody) {
+        requestBody.orderStatus = "IN_PROGRESS";
         requestBody.orderId = uuid();
         requestBody.createdAt = new Date();
         requestBody.updatedAt = new Date();
@@ -114,10 +116,11 @@ export class OrderController {
         @pathParam("id") id: string,
         @body requestBody: RequestBody
         ) {
+        const existingRecord = await this.mapper.get(Object.assign(new Order(), { orderId: id }));
         if(!requestBody.updatedAt){
             requestBody.updatedAt = new Date();
         }
-        return this.mapper.put(Object.assign(new Order(), requestBody, { orderId: id }));
+        return this.mapper.put(Object.assign(new Order(), existingRecord, requestBody, { orderId: id }));
     }
 
     /**
@@ -129,7 +132,7 @@ export class OrderController {
      @DELETE("/:id")
      public async deleteById(
          @pathParam("id") id: string,
-         ) {
-         return this.mapper.delete(Object.assign(new Order(), { orderId: id }));
+         ) {   
+        return this.mapper.delete(Object.assign(new Order(), { orderId: id }));
      }
 }

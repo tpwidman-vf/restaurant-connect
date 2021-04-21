@@ -3,7 +3,6 @@ import { Container } from 'inversify';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { dependencyMockContainer } from '../mocks/dependencyMockContainer';
 import { OrderController } from '../../src/controllers/OrderController';
-import * as events from '../mocks/events';
 import { testEventWithNoOrder, testEventWithOrder, loadAllData } from '../mocks/events';
 
 const container: Container = new Container();
@@ -17,7 +16,7 @@ describe('Check Order Controller', () => {
     orderController = container.get(OrderController);
 
     docClient = container.get(DocumentClient);
-    tableName = container.get('TABLE');
+    tableName = "Orders"; //container.get('TABLE');
     await loadAllData(
       docClient,
       tableName
@@ -25,8 +24,8 @@ describe('Check Order Controller', () => {
   });
 
   it('Successfully returns most recent existing order that is a phone number match from Orders table with connect event', async () => {
-    const result = await orderController.getOrderStatus(events.testEventWithOrder);
-    expect(result).toBe({
+    const result = await orderController.getOrderStatus(testEventWithOrder);
+    expect(result).toEqual({
       "phoneNumber": "+13333333333",
       "pizzaSize": "Medium",
       "orderStatus": "IN_PROGRESS",
@@ -39,7 +38,7 @@ describe('Check Order Controller', () => {
   });
 
   it('returns null when there is no phone number match from Orders table with connect event', async () => {
-    const result = await orderController.getOrderStatus(events.testEventWithOrder);
+    const result = await orderController.getOrderStatus(testEventWithNoOrder);
     expect(result).toBe(null);
   });
 });

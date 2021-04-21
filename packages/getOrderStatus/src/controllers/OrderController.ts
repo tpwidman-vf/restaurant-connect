@@ -9,6 +9,7 @@ import { LoggerService } from '../utils/LoggerService'
 @injectable()
 export class OrderController {
     constructor(
+        @inject(DocumentClient) private docClient: DocumentClient,
         @inject(LoggerService) private logger: LoggerService
     ) {}
     async getOrderStatus(event: ConnectEvent): Promise<Order|null> {
@@ -22,7 +23,7 @@ export class OrderController {
                 throw new Error('getOrderStatus: No phone number In ContactData.CustomerEndpoint');
             }
 
-            const docClient = new DynamoDB.DocumentClient({ region: process.env.REGION || 'us-east-1' });
+            // docClient = new DynamoDB.DocumentClient({ region: process.env.REGION || 'us-east-1' });
 
             const queryParams: DocumentClient.QueryInput = {
                 TableName : "Orders",
@@ -35,7 +36,7 @@ export class OrderController {
             };
 
             try {
-                const queryResult: DynamoDB.DocumentClient.QueryOutput = await docClient.query(queryParams).promise();
+                const queryResult: DynamoDB.DocumentClient.QueryOutput = await this.docClient.query(queryParams).promise();
                 console.log(queryResult);
                 if(queryResult && queryResult.Count && queryResult.Count > 0 && queryResult.Items ) {
                     // get most recent order (ordered by updated time desc)

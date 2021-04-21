@@ -1,5 +1,5 @@
 {
-  "name": "createorder",
+  "name": "getorderstatus",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -9,11 +9,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "\"../../node_modules/.bin/tsdx test\",",
-    "prepare": "rm -rf dist && node_modules/.bin/webpack --mode production --config webpack.config.js"
+    "test": "../../node_modules/.bin/tsdx test",
+    "prepare": "rm -rf dist && ../../node_modules/.bin/webpack --mode production --config webpack.config.js"
   },
   "type": "module",
-  "author": "tpwidman",
+  "author": "VoiceFoundry",
   "license": "ISC",
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",

@@ -3,4 +3,4 @@ import * as cdk from '@aws-cdk/core';
 import { CdkStack } from '../lib/restaurant-connect-stack';
 
 const app = new cdk.App();
-new CdkStack(app, 'RestaurantConnectStackMJM');
+new CdkStack(app, 'RestaurantConnectStack');

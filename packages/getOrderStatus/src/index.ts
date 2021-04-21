@@ -30,7 +30,7 @@ const loadController = async (
  */
 export const handler = async (
   event: ConnectEvent
-): Promise<Order> => {
+): Promise<Order|null> => {
   // ProcessRoutes
   /**
    * Fetch controller

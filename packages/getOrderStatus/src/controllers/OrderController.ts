@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { DataMapper } from '@aws/dynamodb-data-mapper';
+import DynamoDB, { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import { ConnectEvent } from '../types/connect/ConnectEvent';
 import { Order } from '../models/OrdersTable';
@@ -9,36 +9,50 @@ import { LoggerService } from '../utils/LoggerService'
 @injectable()
 export class OrderController {
     constructor(
-        @inject(DataMapper) private mapper: DataMapper,
         @inject(LoggerService) private logger: LoggerService
     ) {}
-    async getOrderStatus(event: ConnectEvent): Promise<Order> {
+    async getOrderStatus(event: ConnectEvent): Promise<Order|null> {
         this.logger.info({ event }, "retrieving order from dynamo");
         try {
-            const params = event.Details.ContactData.CustomerEndpoint.Address;
+            const callerNumberParam = event.Details.ContactData.CustomerEndpoint.Address;
 
-            if(!params) {
+            if(!callerNumberParam) {
                 // no phone number error case
                 console.log('no phone number to check for');
                 throw new Error('getOrderStatus: No phone number In ContactData.CustomerEndpoint');
             }
 
-            const orderModel: Order = {
-                orderId: '0b6a4af2-e7b7-4f42-a67e-8dc3080d1b4d'//params
+            const docClient = new DynamoDB.DocumentClient({ region: process.env.REGION || 'us-east-1' });
+
+            const queryParams: DocumentClient.QueryInput = {
+                TableName : "Orders",
+                KeyConditionExpression: "phoneNumber = :v_phonenumber",
+                IndexName: "PhoneNumber-Index",
+                ExpressionAttributeValues: {
+                    ":v_phonenumber": callerNumberParam
+                },
+                ScanIndexForward: false,
             };
-            let order: Order;
+
             try {
-                order = await this.mapper.get(orderModel);
+                const queryResult: DynamoDB.DocumentClient.QueryOutput = await docClient.query(queryParams).promise();
+                console.log(queryResult);
+                if(queryResult && queryResult.Count && queryResult.Count > 0 && queryResult.Items ) {
+                    // get most recent order (ordered by updated time desc)
+                    const mostRecentOrder = queryResult.Items[0];
+                    return mostRecentOrder;
+                } else {
+                    // no existing orders found
+                    return null;
+                }
+
             } catch (err) {
                 if (err.name === 'ItemNotFoundException') {
-                    this.logger.debug({ params },'getData: order id not found in database');
-                    // return null;
+                    this.logger.debug({ callerNumberParam },'getOrderStatus: error reading from orders table');
+                    return null;
                 }
                 throw err;
             }
-
-            // const retrievedOrder:Order = await this.mapper.get('+14848681861');
-            return order;
         } catch (error) {
             this.logger.error(
                 { error },

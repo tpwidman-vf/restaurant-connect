@@ -9,9 +9,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "\"../../cdk/node_modules/.bin/tsdx test\",",
-    "prepare": "rm -rf dist && ../../cdk/node_modules/.bin/webpack --mode production --config webpack.config.js"
+    "test": "\"../../node_modules/.bin/tsdx test\",",
+    "prepare": "rm -rf dist && node_modules/.bin/webpack --mode production --config webpack.config.js"
   },
+  "type": "module",
   "author": "tpwidman",
   "license": "ISC",
   "dependencies": {

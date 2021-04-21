@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+      - "8080:8080"
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - ./docker/stateMachine:/tmp/stateMachine
+      - ./docker/resources:/docker-entrypoint-initaws.d
+      - ./docker/kms:/init
+      - ./docker/sqs:/tmp/sqs
+  connect:
+    image: lukehendrick/connect-service-go:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - HOST_PORT=9000

@@ -25,6 +25,12 @@ export class CdkStack extends cdk.Stack {
       encryption: TableEncryption.AWS_MANAGED,
       tableName: tableName,
     });
+    // gsi for phone number lookups
+    table.addGlobalSecondaryIndex({
+      indexName: 'PhoneNumber-Index',
+      partitionKey: { name: 'phoneNumber', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'updatedAt', type: dynamodb.AttributeType.STRING }
+    });
     this.table = table;
 
     // S3 bucket to store terraform state for LexBots.  Why?  CDK and cloudformation don't support

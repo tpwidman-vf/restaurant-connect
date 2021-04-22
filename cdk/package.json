@@ -17,8 +17,13 @@
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
+    "ts-loader": "8.1.0",
     "ts-node": "^9.0.0",
-    "typescript": "~3.9.7"
+    "tsdx": "^0.14.0",
+    "tsdxw": "0.0.7",
+    "typescript": "^3.9.9",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.98.0",

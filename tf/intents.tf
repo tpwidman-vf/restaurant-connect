@@ -1,6 +1,6 @@
 resource "aws_lex_intent" "get_food_order_intent" {
     depends_on = [
-      aws_lex_slot_type.pizza_toppings, aws_lex_slot_type.pizza_size
+        aws_lex_slot_type.pizza_toppings, aws_lex_slot_type.pizza_size
     ]
     name              = "GetFoodOrder"
     sample_utterances = [

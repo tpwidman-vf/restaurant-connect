@@ -45,6 +45,12 @@ export class CdkStack extends cdk.Stack {
       // enable streaming for triggers.
       stream: StreamViewType.NEW_IMAGE,
     });
+    // gsi for phone number lookups
+    table.addGlobalSecondaryIndex({
+      indexName: 'PhoneNumber-Index',
+      partitionKey: { name: 'phoneNumber', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'updatedAt', type: dynamodb.AttributeType.STRING }
+    });
     this.table = table;
 
     // S3 bucket to store terraform state for LexBots.  Why?  CDK and cloudformation don't support
@@ -73,6 +79,8 @@ export class CdkStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(60),
       memorySize: 1024,
     });
+
+
     table.grantReadWriteData(createOrdersLambda);
     this.createOrdersFunction = createOrdersLambda;
 
@@ -84,5 +92,20 @@ export class CdkStack extends cdk.Stack {
 
     topic.addSubscription(new subs.SqsSubscription(queue));
 
+    // getOrderStatus lambda function
+    const getOrderStatusLambda = new lambda.Function(this, 'getOrderStatus', {
+      functionName: "getOrderStatus",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      environment: {
+        TABLE_NAME: tableName,
+        SERVICE_NAME: 'getOrderStatus',
+        LOG_LEVEL: 'info',
+      },
+      code: lambda.Code.fromAsset('../packages/getOrderStatus/dist'),
+      handler: 'index.handler',
+      timeout: cdk.Duration.seconds(7),
+      memorySize: 1024,
+    });
+    this.table.grantReadData(getOrderStatusLambda);
   }
 }

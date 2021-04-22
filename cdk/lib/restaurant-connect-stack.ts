@@ -16,6 +16,12 @@ export class CdkStack extends cdk.Stack {
 
   // Create orders lambda
   public readonly createOrdersFunction: lambda.Function;
+  
+  // Orders API Gateway Lambda
+  public readonly ordersAPIFunction: lambda.Function;
+
+  // API Gateway
+  public readonly APIGateway: apigw.LambdaRestApi;
 
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -59,6 +65,30 @@ export class CdkStack extends cdk.Stack {
     });
     table.grantReadWriteData(createOrdersLambda);
     this.createOrdersFunction = createOrdersLambda;
+
+        // a Lambda function that gets granted access to the table would go here.  Along with any other lambdas
+    // that might need to talk to it.
+    const ordersAPILambda = new lambda.Function(this, 'ordersApi', {
+      functionName: "createOrders",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      environment: {
+        TABLE_NAME: tableName,
+        SERVICE_NAME: 'createOrders',
+        LOG_LEVEL: 'info',
+      },
+      code: lambda.Code.fromAsset('../packages/ordersApi/dist'),
+      handler: 'index.handler',
+      timeout: cdk.Duration.seconds(60),
+      memorySize: 1024,
+    });
+    table.grantReadWriteData(ordersAPILambda);
+    this.ordersAPIFunction = ordersAPILambda;
+
+    new apigw.LambdaRestApi(this, 'orders', {
+      handler: ordersAPILambda,
+      restApiName: "ordersAPI",
+      description: "API for orders database",
+    });
 
     // const hello = new lambda.Function(this, 'rcHealthCheckEndpoint', {
     //   runtime: lambda.Runtime.NODEJS_12_X, 

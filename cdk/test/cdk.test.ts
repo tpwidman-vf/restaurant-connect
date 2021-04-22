@@ -56,3 +56,8 @@ test('Lambda function created', () => {
         }
     })));
 });
+test('Lambda API gateway integration created', () => {
+    const app = new cdk.App();
+    const stack = new Cdk.CdkStack(app, 'RestaurantConnectStack');
+    expectCDK(stack).to(haveResource("AWS::ApiGateway::Resource"))
+})

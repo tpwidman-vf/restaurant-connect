@@ -97,3 +97,52 @@ resource "aws_lex_intent" "get_food_order_intent" {
 output "intents_arn" {
     value = aws_lex_intent.get_food_order_intent.arn
 }
+
+resource "aws_lex_intent" "confirm_intent" {
+    name              = "ConfirmIntent"
+    sample_utterances = [
+        "you bet",
+        "I am",
+        "yep",
+        "sure am",
+        "you got it",
+        "that's the one",
+        "yeh",
+        "that's correct",
+        "correct",
+        "yeah",
+        "yes",
+        "ya"
+    ]
+
+    fulfillment_activity {
+        type = "ReturnIntent"
+    }
+}
+
+output "confirm_intent_arn" {
+    value = aws_lex_intent.confirm_intent.arn
+}
+
+resource "aws_lex_intent" "reject_intent" {
+    name              = "RejectIntent"
+    sample_utterances = [
+        "I am not",
+        "what",
+        "huh",
+        "what order",
+        "I don't think so",
+        "negative",
+        "nah",
+        "nope",
+        "no"
+    ]
+
+    fulfillment_activity {
+        type = "ReturnIntent"
+    }
+}
+
+output "reject_intent_arn" {
+    value = aws_lex_intent.reject_intent.arn
+}

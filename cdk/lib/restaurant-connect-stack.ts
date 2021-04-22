@@ -1,9 +1,13 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as apigw from '@aws-cdk/aws-apigateway';
+import * as sns from '@aws-cdk/aws-sns';
+import * as subs from '@aws-cdk/aws-sns-subscriptions';
+import * as sqs from '@aws-cdk/aws-sqs';
 
-import { TableEncryption } from '@aws-cdk/aws-dynamodb';
+import { StreamViewType, TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
 import { RemovalPolicy } from '@aws-cdk/core';
 
@@ -12,8 +16,20 @@ export class CdkStack extends cdk.Stack {
   // Orders table
   public readonly table: dynamodb.Table;
 
+  // Create orders lambda
+  public readonly createOrdersFunction: lambda.Function;
+
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const s3DynamoExportBucket = new s3.Bucket(this, 'dynamoExportBucket', {
+      versioned: true,
+      bucketName: 'vf-restaurant-connect-dynamo-export', 
+      encryption: BucketEncryption.KMS_MANAGED,
+      publicReadAccess: false,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     // DynamoDB orders table
     let tableName = 'Orders';
@@ -24,6 +40,10 @@ export class CdkStack extends cdk.Stack {
       },
       encryption: TableEncryption.AWS_MANAGED,
       tableName: tableName,
+      // enable back ups for putting the table in s3 for ETL.
+      pointInTimeRecovery: true,
+      // enable streaming for triggers.
+      stream: StreamViewType.NEW_IMAGE,
     });
     // gsi for phone number lookups
     table.addGlobalSecondaryIndex({
@@ -51,7 +71,8 @@ export class CdkStack extends cdk.Stack {
       environment: {
         TABLE_NAME: tableName,
         SERVICE_NAME: 'createOrders',
-        LOG_LEVEL: 'info',
+        LOG_LEVEL: 'debug',
+        ORDERS_EMAIL: 'success@simulator.amazonses.com'
       },
       code: lambda.Code.fromAsset('../packages/createOrder/dist'),
       handler: 'index.handler',
@@ -59,6 +80,17 @@ export class CdkStack extends cdk.Stack {
       memorySize: 1024,
     });
 
+
+    table.grantReadWriteData(createOrdersLambda);
+    this.createOrdersFunction = createOrdersLambda;
+
+    const queue = new sqs.Queue(this, 'OrderQueue', {
+      visibilityTimeout: cdk.Duration.seconds(300)
+    });
+
+    const topic = new sns.Topic(this, 'OrderTopic');
+
+    topic.addSubscription(new subs.SqsSubscription(queue));
 
     // getOrderStatus lambda function
     const getOrderStatusLambda = new lambda.Function(this, 'getOrderStatus', {
@@ -75,6 +107,5 @@ export class CdkStack extends cdk.Stack {
       memorySize: 1024,
     });
     this.table.grantReadData(getOrderStatusLambda);
-
   }
 }

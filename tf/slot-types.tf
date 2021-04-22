@@ -10,17 +10,20 @@ resource "aws_lex_slot_type" "pizza_toppings" {
     }
     enumeration_value {
         synonyms = [
-            "pepperoni cheese",
+            "pepperoni cheese", "pepperoni", "peps"
         ]
         value    = "Pepperoni and cheese"
     }
     enumeration_value {
         synonyms = [
-            "pepperonis",
+            "pepperonis", "pepperoni", "peps"
         ]
         value    = "Pepperoni"
     }
     enumeration_value {
+        synonyms = [ 
+            "plain", "cheese" 
+        ]
         value    = "Cheese"
     }
     value_selection_strategy = "TOP_RESOLUTION"
@@ -33,18 +36,21 @@ resource "aws_lex_slot_type" "pizza_size" {
     enumeration_value {
         synonyms = [
             "10 inch",
+            "small"
         ]
         value    = "Small"
     }
     enumeration_value {
         synonyms = [
             "12 inch",
+            "medium"
         ]
         value    = "Medium"
     }
     enumeration_value {
         synonyms = [
             "14 inch",
+            "large"
         ]
         value    = "Large"
     }
@@ -54,6 +60,13 @@ resource "aws_lex_slot_type" "pizza_size" {
             "Extra large",
         ]
         value    = "Extra-large"
+    }
+    enumeration_value {
+        synonyms = [ 
+            "sheet",
+            "party pizza"
+        ]
+        value = "Sheet"
     }
     value_selection_strategy = "TOP_RESOLUTION"
 

@@ -1,8 +1,4 @@
 #!/bin/bash
-if ! [ -x "$(command -v cdk)" ]; then
-  echo 'cdk is not installed, so I am installing it now.'
-  npm install -g aws-cdk
-fi
 
 cd cdk/
 
@@ -22,6 +18,7 @@ cd ../tf
 ../deploy/install-terraform.sh
 
 # download dependent terraform version
+./terraform init
 ./terraform plan
 ./terraform apply
 

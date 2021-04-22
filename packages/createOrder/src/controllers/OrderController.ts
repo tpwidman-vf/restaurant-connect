@@ -1,6 +1,7 @@
 import { injectable, inject } from "inversify";
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { v4 as uuidv4 } from 'uuid';
+import aws from 'aws-sdk';
 
 import { ConnectEvent } from '../types/connect/ConnectEvent';
 import { Order } from '../models/OrdersTable';
@@ -30,6 +31,8 @@ export class OrderController {
             order.customer = params.Customer;
             order.orderId = id;
             await this.mapper.put(order);
+            this.sendOrderEmail(order);
+            this.sendOrderSqsMessage(order);
             return {
                 orderId: id,
                 orderStatus: status,
@@ -42,5 +45,35 @@ export class OrderController {
               );
               throw error;
         }
+    }
+
+    async sendOrderEmail(order: Order) {
+        const ses = new aws.SES({ region: "us-east-1"});
+        const params = {
+            Destination: {
+                ToAddresses: [process.env.ORDERS_EMAIL],
+            }, 
+            Message: {
+                Body: {
+                   Text: { Data: JSON.stringify(order) }, 
+                },
+                Subject: { Data: "Order "+order.orderId + " has been submitted" },                
+            },
+            Source: 'PizzaOrdersTeam8@vf-team8.com',
+        }
+        try {
+            this.logger.debug({}, 'Sending an order email for order ' + order.orderId);
+            await ses.sendEmail(params).promise();
+        } catch (error) {
+            this.logger.error(
+                { error }, 
+                'Error trying to send SES notification email.'
+            );
+            throw error;
+        }
+    }
+
+    async sendOrderSqsMessage(order: Order) {
+        order === order;
     }
 }

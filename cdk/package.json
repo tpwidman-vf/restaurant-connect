@@ -1,6 +1,6 @@
 {
   "name": "cdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "bin": {
     "cdk": "bin/cdk.js"
   },
@@ -11,8 +11,8 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "aws-cdk": "1.96.0",
-    "@aws-cdk/assert": "1.96.0",
+    "aws-cdk": "1.98.0",
+    "@aws-cdk/assert": "1.98.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
@@ -26,11 +26,13 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "@aws-cdk/aws-dynamodb": "1.96.0",
-    "@aws-cdk/aws-s3": "1.96.0",
-    "@aws-cdk/aws-sns": "1.96.0",
-    "@aws-cdk/aws-sns-subscriptions": "1.96.0",
-    "@aws-cdk/aws-sqs": "1.96.0",
-    "@aws-cdk/core": "1.96.0"
+    "@aws-cdk/aws-apigateway": "^1.98.0",
+    "@aws-cdk/aws-dynamodb": "^1.98.0",
+    "@aws-cdk/aws-lambda": "^1.98.0",
+    "@aws-cdk/aws-s3": "^1.98.0",
+    "@aws-cdk/aws-sns": "^1.98.0",
+    "@aws-cdk/aws-sns-subscriptions": "^1.98.0",
+    "@aws-cdk/aws-sqs": "^1.98.0",
+    "@aws-cdk/core": "1.98.0"
   }
 }

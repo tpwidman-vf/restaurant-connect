@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "restaurant connect project.",
   "scripts": {
-    "i": "lerna run i",
     "remove:node_modules": "rm -rf packages/*/node_modules",
     "remove:package-locks": "find . -name package-lock.json -delete",
     "codeartifact:team5": "aws codeartifact login --tool npm --repository shared-services --domain vf-team5 --domain-owner 333038793868 --namespace @vf-team5 --region us-east-1",

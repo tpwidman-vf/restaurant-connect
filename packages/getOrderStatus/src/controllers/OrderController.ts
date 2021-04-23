@@ -40,7 +40,9 @@ export class OrderController {
                 console.log(queryResult);
                 if(queryResult && queryResult.Count && queryResult.Count > 0 && queryResult.Items ) {
                     // get most recent order (ordered by updated time desc)
-                    const mostRecentOrder = queryResult.Items[0];
+                    let mostRecentOrder = queryResult.Items[0];
+                    // cleanup the order status so it's read back 
+                    mostRecentOrder.orderStatus = mostRecentOrder.orderStatus.replace('_', ' ');
                     return mostRecentOrder;
                 } else {
                     // no existing orders found

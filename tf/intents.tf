@@ -101,6 +101,7 @@ output "intents_arn" {
 resource "aws_lex_intent" "confirm_intent" {
     name              = "ConfirmIntent"
     sample_utterances = [
+        "one",
         "you bet",
         "I am",
         "yep",
@@ -127,6 +128,7 @@ output "confirm_intent_arn" {
 resource "aws_lex_intent" "reject_intent" {
     name              = "RejectIntent"
     sample_utterances = [
+        "two",
         "I am not",
         "what",
         "huh",

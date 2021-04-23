@@ -77,11 +77,13 @@ export const app = async (event: ConnectEvent, { httpClient }: { httpClient: Axi
         }
         const response: AxiosResponse = await httpClient.get('/orders', axiosParams);
         const items: Order[] = response.data.Items;
-        return {
+        const checkOrderResponse: CheckOrderResponse = {
             textString: items.length > 0 ? orderSummary(items) : `There are no orders associated with the phone number used to place the call`,
             numberOfOrders: items.length,
             hasOrders: items.length > 0
         }
+        logger.debug(checkOrderResponse)
+        return checkOrderResponse;
     } catch (error) {
         logger.error({ error });
         return {

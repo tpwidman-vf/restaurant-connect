@@ -79,7 +79,7 @@ export const app = async (event: ConnectEvent, { httpClient }: { httpClient: Axi
     } catch (error) {
         logger.error({ error });
         return {
-            textString: 'There was a problem retrieving orders with the phoneNumber',
+            textString: 'There was a problem retrieving orders with the phone number',
             numberOfOrders: 0,
             hasOrders: false
         }

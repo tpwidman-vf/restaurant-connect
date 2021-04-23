@@ -18,7 +18,7 @@ resource "aws_lex_intent" "get_food_order_intent" {
         max_attempts = 3
 
         message {
-            content      = "Ok, I have you down for a \u200b{PizzaSize}\u200b \u200b{PizzaToppings}\u200b pizza for {CustomerName}  Is that correct?"
+            content      = "Ok, I have you down for a {PizzaSize} {PizzaToppings} pizza for {CustomerName}  Is that correct?"
             content_type = "PlainText"
         }
     }
@@ -50,7 +50,7 @@ resource "aws_lex_intent" "get_food_order_intent" {
         priority          = 1
         slot_constraint   = "Required"
         slot_type         = "PizzaSize"
-        slot_type_version = "1"
+        slot_type_version = aws_lex_slot_type.pizza_size.version
 
         value_elicitation_prompt {
             max_attempts = 2
@@ -66,7 +66,7 @@ resource "aws_lex_intent" "get_food_order_intent" {
         priority          = 2
         slot_constraint   = "Required"
         slot_type         = "PizzaToppings"
-        slot_type_version = "1"
+        slot_type_version = aws_lex_slot_type.pizza_toppings.version
 
         value_elicitation_prompt {
             max_attempts = 2

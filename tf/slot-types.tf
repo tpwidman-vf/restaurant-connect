@@ -1,5 +1,5 @@
 resource "aws_lex_slot_type" "pizza_toppings" {
-    create_version = false
+    create_version = true
     description              = "Toppings for pizza"
     name                     = "PizzaToppings"
     enumeration_value {
@@ -30,7 +30,7 @@ resource "aws_lex_slot_type" "pizza_toppings" {
 }
 
 resource "aws_lex_slot_type" "pizza_size" {
-    create_version = false
+    create_version = true
     description              = "Pizza sizes"
     name                     = "PizzaSize"
     enumeration_value {

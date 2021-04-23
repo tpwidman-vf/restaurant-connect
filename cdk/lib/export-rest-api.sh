@@ -1,5 +1,5 @@
 aws apigateway get-export \
---parameters extensions='apigateway' \
---rest-api-id abcdefg123  \
---stage-name dev \
---export-type swagger latestswagger2.json
+--rest-api-id 2m4ncx4jdf  \
+--stage-name prod \
+--export-type swagger cdk/orders-swagger.json \
+--parameters extensions='apigateway'

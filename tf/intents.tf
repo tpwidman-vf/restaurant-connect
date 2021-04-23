@@ -98,6 +98,50 @@ output "intents_arn" {
     value = aws_lex_intent.get_food_order_intent.arn
 }
 
+resource "aws_lex_intent" "check_order_status_intent" {
+    name              = "CheckOrderStatus"
+    sample_utterances = [
+        "I would like to check my orders status",
+        "Where is my food",
+    ]
+
+    fulfillment_activity {
+        type = "ReturnIntent"
+    }
+
+    slot {
+        name              = "CustomerName"
+        priority          = 1
+        slot_constraint   = "Required"
+        slot_type         = "AMAZON.Person"
+
+        value_elicitation_prompt {
+            max_attempts = 2
+
+            message {
+                content      = "What name is on the order?"
+                content_type = "PlainText"                
+            }
+        }
+    }
+    slot {
+        name              = "CustomerPhone"
+        priority          = 2
+        slot_constraint   = "Optional"
+        slot_type         = "AMAZON.PhoneNumber"
+
+        value_elicitation_prompt {
+            max_attempts = 2
+
+            message {
+                content      = "What phone number is on the order?"
+                content_type = "PlainText"
+            }
+        }
+    }
+}
+
+
 resource "aws_lex_intent" "confirm_intent" {
     name              = "ConfirmIntent"
     sample_utterances = [

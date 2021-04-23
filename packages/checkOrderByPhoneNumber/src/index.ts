@@ -27,7 +27,7 @@ const instances = (): { httpClient: AxiosInstance } => {
 };
 /**
  * 
- * @param arr 
+ * @param { string[] } arr 
  * @returns string concattenated using english grammer 
  * @example makeString(["one", "two", "three"]) // "one, two and three"
  */

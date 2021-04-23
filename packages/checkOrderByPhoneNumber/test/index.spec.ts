@@ -15,7 +15,6 @@ describe("Retrieves data from axios correctly", () => {
     const response = await app(stubs.sampleConnectEvent, { httpClient: client });
     expect(response.numberOfOrders).toBe(1);
     expect(response.hasOrders).toBeTruthy();
-    console.log(response);
   });
   it('should return the correct response for multiple orders', async() => {
     const items = [
@@ -48,6 +47,18 @@ describe("Retrieves data from axios correctly", () => {
     const response = await app(stubs.sampleConnectEvent, { httpClient: client });
     expect(response.numberOfOrders).toBe(3);
     expect(response.hasOrders).toBeTruthy();
+  });
+  it('should return 0 if there are no orders with the phone number registered', async() => {
+    mock.onGet('/orders').reply(200, Object.assign({}, stubs.sampleGETResult, { Items: [] }));
+    const response = await app(stubs.sampleConnectEvent, { httpClient: client });
     console.log(response);
-  })
+    expect(response.numberOfOrders).toBe(0);
+    expect(response.hasOrders).toBeFalsy();
+  });
+  it('should handle the 404 gracefully', async() => {
+    mock.onGet('/orders').reply(404, stubs.sampleGETResult);
+    const response = await app(stubs.sampleConnectEvent, { httpClient: client });
+    expect(response.numberOfOrders).toBe(0);
+    expect(response.hasOrders).toBeFalsy();
+  });
 });

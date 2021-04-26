@@ -7,6 +7,11 @@ import * as sns from '@aws-cdk/aws-sns';
 import * as subs from '@aws-cdk/aws-sns-subscriptions';
 import * as sqs from '@aws-cdk/aws-sqs';
 
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import * as route53 from '@aws-cdk/aws-route53';
+import * as s3Deploy from '@aws-cdk/aws-s3-deployment';
+import * as acm from '@aws-cdk/aws-certificatemanager';
+
 import { StreamViewType, TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
 import { RemovalPolicy } from '@aws-cdk/core';
@@ -107,5 +112,30 @@ export class CdkStack extends cdk.Stack {
       memorySize: 1024,
     });
     this.table.grantReadData(getOrderStatusLambda);
+
+    // Order status UI.  In order to serverlessly host a React UI, you need the following elements
+
+    // step 1: a domain name in an existing hosted zone (admittedly this optional but much cooler than using a xxxxx.cloudfront.net domain)
+    const domainName = 'vf-team8.com';
+    const siteSubDomain = 'rc-order-status';
+    //const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: domainName });
+    const siteDomain = siteSubDomain + '.' + domainName;
+    new cdk.CfnOutput(this, 'Site', { value: 'https://' + siteDomain });
+
+    // step 2: an S3 bucket to put all your "stuff".  Ie the outputs of npm run build in your react app.
+    // Content bucket
+    const siteBucket = new s3.Bucket(this, 'SiteBucket', {
+      bucketName: siteDomain,
+      websiteIndexDocument: 'index.html',
+      websiteErrorDocument: 'error.html',
+      publicReadAccess: true,
+
+      // The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
+      // the new bucket, and it will remain in your account until manually deleted. By setting the policy to
+      // DESTROY, cdk destroy will attempt to delete the bucket, but will error if the bucket is not empty.
+      removalPolicy: cdk.RemovalPolicy.DESTROY, // NOT recommended for production code
+    });
+    new cdk.CfnOutput(this, 'Bucket', { value: siteBucket.bucketName });
+    
   }
 }

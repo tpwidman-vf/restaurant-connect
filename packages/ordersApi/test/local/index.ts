@@ -28,5 +28,12 @@ let cachedContainer: Container;
 
 loadContainer().then((appContainer) => {
     let app = new ApiConsoleApp([path.join(__dirname, "controllers")], appConfig, appContainer)
+    app.configureApi((middleware: any) => {
+        middleware.use((req: any, res: any, next: any) => {
+            console.log(req.method, "method");
+            res.header("Access-Control-Allow-Origin", "*");
+            next()
+        });
+    })
     app.runServer(process.argv)
 })

@@ -1,4 +1,4 @@
-import { AppConfig, ApiLambdaApp, ApiRequest, } from "ts-lambda-api";
+import { AppConfig, ApiLambdaApp, ApiRequest } from "ts-lambda-api";
 import { Container } from 'inversify';
 import container from './dependencyContainer';
 
@@ -21,11 +21,17 @@ let cachedContainer: Container;
 };
 
 // const appController = new AppController();
-
 // // Pass the customer container into the app - controllersPath is ignored
 
 export async function handler(event: ApiRequest, context: any) {
     const appContainer = await loadContainer();
     const app = new ApiLambdaApp(undefined, appConfig, appContainer);
+    app.configureApi((middleware: any) => {
+        middleware.use((req: any, res: any, next: any) => {
+            console.log(req.method, "httpMethod");
+            res.header("Access-Control-Allow-Origin", "*");
+            next()
+        });
+    });
     return await app.run(event, context);
 }

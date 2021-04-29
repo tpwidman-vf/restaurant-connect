@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-    //'http://localhost:8080/api/v1/'
+    // baseURL: 'http://localhost:8080/api/v1/'
     baseURL: 'https://2m4ncx4jdf.execute-api.us-east-1.amazonaws.com/prod/'
 })
 async function addRow(body){
@@ -23,9 +23,7 @@ async function updateRow(body){
         ...rest
     } = body;
     const response = await client.put(`/orders/${id}`, rest);
-    console.log(response);
     return response;
-    // return response;
 }
 async function removeRow(id){
     const response = await client.delete(`/orders/${id}`);

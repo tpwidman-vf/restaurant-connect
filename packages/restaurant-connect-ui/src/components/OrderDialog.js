@@ -10,6 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import { addRow } from '../services/dbApi'
+import eventBus from "../services/eventBus";
 
 export default class OrderDialog extends React.Component {
     constructor(props) {
@@ -48,7 +49,7 @@ export default class OrderDialog extends React.Component {
                 pizzaSize: this.state.pizzaSize
             }
             return addRow(payload).then(res => {
-                console.log(res);
+                eventBus.dispatch("updateTable", res);
                 this.toggle();
             })
         }

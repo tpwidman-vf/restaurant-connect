@@ -20,6 +20,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { getRows } from './services/dbApi';
+import eventBus from './services/eventBus';
 import columns from './components/GridColumns';
 import OrderDialog from './components/OrderDialog';
 
@@ -48,25 +49,28 @@ const useStyles = makeStyles((theme) =>
         },
     }),
 );
-function refreshOrders(){
-    getRows()
-        .then((Items) => {
-            return this.setState({ Items });
-        });
-}
 class App extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
         Items: [],
       };
-      this.refreshOrders = refreshOrders.bind(this);
+    }
+    refreshOrders(){
+        getRows()
+            .then((Items) => this.setState({ Items }));
     }
     componentDidMount() {
+        eventBus.on("updateTable", (data) => {
+            this.refreshOrders();
+        })
         this.setState({ dialogOpen: false });
         getRows()
             .then(Items => 
                 this.setState({ Items }));
+    }
+    componentWillUnmount() {
+        eventBus.remove("updateTable");
     }
     toggleDialogOpen(){
         this.dialogOpen.toggle();

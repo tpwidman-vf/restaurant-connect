@@ -55,7 +55,7 @@ export default class OrderDialog extends React.Component {
         
         return (
             <Dialog
-                title="Dialog With Custom Width"
+                title="Create Order"
                 open= {this.state.dialogOpen}
             >
                 <DialogContent>

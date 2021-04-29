@@ -1,6 +1,6 @@
 {
   "name": "cdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "bin": {
     "cdk": "bin/cdk.js"
   },
@@ -11,23 +11,30 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "aws-cdk": "1.98.0",
-    "@aws-cdk/assert": "1.98.0",
+    "@aws-cdk/assert": "*",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
+    "aws-cdk": "*",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
+    "ts-loader": "8.1.0",
     "ts-node": "^9.0.0",
-    "typescript": "~3.9.7"
+    "tsdx": "^0.14.0",
+    "tsdxw": "0.0.7",
+    "typescript": "^3.9.9",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "^1.98.0",
-    "@aws-cdk/aws-dynamodb": "^1.98.0",
-    "@aws-cdk/aws-lambda": "^1.98.0",
-    "@aws-cdk/aws-s3": "^1.98.0",
-    "@aws-cdk/aws-sns": "1.98.0",
-    "@aws-cdk/aws-sns-subscriptions": "1.98.0",
-    "@aws-cdk/aws-sqs": "1.98.0",
-    "@aws-cdk/core": "1.98.0"
+    "@aws-cdk/aws-apigateway": "*",
+    "@aws-cdk/aws-certificatemanager": "^1.100.0",
+    "@aws-cdk/aws-dynamodb": "*",
+    "@aws-cdk/aws-lambda": "*",
+    "@aws-cdk/aws-route53": "^1.100.0",
+    "@aws-cdk/aws-s3": "^1.100.0",
+    "@aws-cdk/aws-sns": "*",
+    "@aws-cdk/aws-sns-subscriptions": "*",
+    "@aws-cdk/aws-sqs": "*",
+    "@aws-cdk/core": "*"
   }
 }

@@ -1,0 +1,22 @@
+{
+  "packages": ["packages/*"],
+  "command": {
+    "create": {
+      "homepage": "TODO",
+      "license": "UNLICENSED"
+    },
+    "version": {
+      "allowBranch": "master",
+      "conventionalCommits": true,
+      "exact": true,
+      "message": "chore(release): %s"
+    },
+    "publish": {
+      "ignoreChanges": ["ignored-file", "*.md"],
+      "message": "chore(release): publish",
+      "registry": "https://npm.pkg.github.com"
+    }
+  },
+  "ignoreChanges": ["**/*.md", "**/test/**", "**/*.test.ts", "**/*.spec.ts", ".github", ".vscode"],
+  "version": "0.0.0"
+}

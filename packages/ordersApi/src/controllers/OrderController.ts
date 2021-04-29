@@ -11,7 +11,7 @@ import {
     DELETE,
     pathParam, 
     queryParam, 
-    body
+    body,
  } from "ts-lambda-api";
 
 import { LoggerService } from "../utils/LoggerService";
@@ -79,7 +79,20 @@ export class OrderController {
         const result = await this.client.scan(baseQueryObject).promise();
         return result;
     }
-
+    /**
+     * 
+     * @param requestBody 
+     */
+    createOrderFromRequestBody(requestBody: any){
+        const defaults = {
+            orderStatus: "IN_PROGRESS",
+            orderId: uuid(),
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
+        const order = new Order(Object.assign({}, defaults, requestBody));
+        return order
+    }
     /**
      * 
      * @param requestBody 
@@ -87,11 +100,12 @@ export class OrderController {
      */
     @POST("/")
     public async create(@body requestBody: RequestBody) {
-        requestBody.orderStatus = "IN_PROGRESS";
-        requestBody.orderId = uuid();
-        requestBody.createdAt = new Date();
-        requestBody.updatedAt = new Date();
-        return this.mapper.put(Object.assign(new Order(), requestBody));
+        if(Array.isArray(requestBody)){
+            const input = requestBody.map(this.createOrderFromRequestBody);
+            this.mapper.batchPut(input);
+            return input;
+        }
+        return this.mapper.put(this.createOrderFromRequestBody(requestBody));
     }
 
     /**

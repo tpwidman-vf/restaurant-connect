@@ -1,6 +1,6 @@
 {
   "name": "createorder",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/index.js",
   "directories": {
@@ -8,18 +8,18 @@
     "test": "test"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && rm -r dist/node_modules && mkdir dist/node_modules/ && cp -r node_modules/ dist/node_modules/",
     "prepare": "rm -rf dist && ../../node_modules/.bin/webpack --mode production --config webpack.config.js",
     "test": "\"../../node_modules/.bin/tsdx test\","
   },
   "author": "tpwidman",
   "license": "ISC",
-  "type" : "module",
+  "type": "module",
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
     "@types/aws-lambda": "^8.10.73",
-    "aws-sdk": "^2.881.0",
+    "aws-sdk": "^2.887.0",
     "inversify": "^5.0.5",
     "pino": "^6.11.2",
     "reflect-metadata": "^0.1.13",

@@ -82,7 +82,7 @@ export class CdkStack extends cdk.Stack {
       environment: {
         S3_SAVE_BUCKET: ordersSaveBucket.bucketName,
       },
-      code: lambda.Code.fromAsset('../packages/streamTrigger'),
+      code: lambda.Code.fromAsset('../packages/auditTrigger'),
       handler: 'index.handler',
       memorySize: 1024,
     });
@@ -130,11 +130,11 @@ export class CdkStack extends cdk.Stack {
         // a Lambda function that gets granted access to the table would go here.  Along with any other lambdas
     // that might need to talk to it.
     const ordersAPILambda = new lambda.Function(this, 'ordersApi', {
-      functionName: "createOrders",
+      functionName: "ordersApi",
       runtime: lambda.Runtime.NODEJS_12_X,
       environment: {
         TABLE_NAME: tableName,
-        SERVICE_NAME: 'createOrders',
+        SERVICE_NAME: 'ordersApi',
         LOG_LEVEL: 'info',
       },
       code: lambda.Code.fromAsset('../packages/ordersApi/dist'),

@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { DataGrid } from '@material-ui/data-grid'
+import { DataGrid, GridSortDirection } from '@material-ui/data-grid'
 
 
 
@@ -78,6 +78,12 @@ class App extends React.Component {
 
     render(){
         const { classes } = this.props;
+        const sortModel = [
+            {
+              field: 'updatedAt',
+              sort: 'desc'
+            },
+          ];
         return (
             <div className={classes.root}>
                 <AppBar position="static">
@@ -120,6 +126,7 @@ class App extends React.Component {
                                     autoHeight = {true}
                                     columns={columns} 
                                     rows={this.state.Items}
+                                    sortModel={sortModel}                                   
                                 />
                             </div>
                         </Grid>

@@ -15,8 +15,9 @@ import * as targets from '@aws-cdk/aws-route53-targets/lib';
 
 import { StreamViewType, TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
-import { Aws, RemovalPolicy } from '@aws-cdk/core';
-import { DynamoEventSource, SqsDlq } from '@aws-cdk/aws-lambda-event-sources';
+import { RemovalPolicy } from '@aws-cdk/core';
+import { DynamoEventSource } from '@aws-cdk/aws-lambda-event-sources';
+import { Tracing } from '@aws-cdk/aws-lambda';
 
 
 export class CdkStack extends cdk.Stack {
@@ -76,7 +77,7 @@ export class CdkStack extends cdk.Stack {
     });
     this.table = table;
 
-    const streamTrigger = new lambda.Function(this, 'newOrdersTrigger', {
+    const streamTrigger = new lambda.Function(this, 'orderAuditTrigger', {
       functionName: "newOrdersTrigger",
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
@@ -85,6 +86,7 @@ export class CdkStack extends cdk.Stack {
       code: lambda.Code.fromAsset('../packages/auditTrigger'),
       handler: 'index.handler',
       memorySize: 1024,
+      tracing: Tracing.ACTIVE,
     });
 
     streamTrigger.addEventSource(new DynamoEventSource(table, {
@@ -93,6 +95,8 @@ export class CdkStack extends cdk.Stack {
       bisectBatchOnError: true,
       retryAttempts: 10
     }));
+
+    ordersSaveBucket.grantReadWrite(streamTrigger);
 
 
     // S3 bucket to store terraform state for LexBots.  Why?  CDK and cloudformation don't support
@@ -150,12 +154,6 @@ export class CdkStack extends cdk.Stack {
       restApiName: "ordersAPI",
       description: "API for orders database",
     });
-
-    // const hello = new lambda.Function(this, 'rcHealthCheckEndpoint', {
-    //   runtime: lambda.Runtime.NODEJS_12_X, 
-    //   code: lambda.Code.fromAsset('lambda'),
-    //   handler: 'hello.handler'
-    // });
 
     const queue = new sqs.Queue(this, 'OrderQueue', {
       visibilityTimeout: cdk.Duration.seconds(300)

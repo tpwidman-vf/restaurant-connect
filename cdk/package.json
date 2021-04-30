@@ -26,16 +26,16 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "*",
+    "@aws-cdk/aws-apigateway": "^1.100.0",
     "@aws-cdk/aws-certificatemanager": "^1.100.0",
-    "@aws-cdk/aws-dynamodb": "*",
-    "@aws-cdk/aws-lambda": "*",
-    "@aws-cdk/aws-lambda-event-sources": "^1.98.0",
+    "@aws-cdk/aws-dynamodb": "^1.100.0",
+    "@aws-cdk/aws-lambda": "^1.100.0",
+    "@aws-cdk/aws-lambda-event-sources": "^1.100.0",
     "@aws-cdk/aws-route53": "^1.100.0",
     "@aws-cdk/aws-s3": "^1.100.0",
-    "@aws-cdk/aws-sns": "*",
-    "@aws-cdk/aws-sns-subscriptions": "*",
-    "@aws-cdk/aws-sqs": "*",
-    "@aws-cdk/core": "*"
+    "@aws-cdk/aws-sns": "^1.100.0",
+    "@aws-cdk/aws-sns-subscriptions": "^1.100.0",
+    "@aws-cdk/aws-sqs": "^1.100.0",
+    "@aws-cdk/core": "^1.100.0"
   }
 }

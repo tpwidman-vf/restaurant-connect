@@ -16,6 +16,8 @@ import * as targets from '@aws-cdk/aws-route53-targets/lib';
 import { StreamViewType, TableEncryption } from '@aws-cdk/aws-dynamodb';
 import { BlockPublicAccess, BucketEncryption } from '@aws-cdk/aws-s3';
 import { Aws, RemovalPolicy } from '@aws-cdk/core';
+import { DynamoEventSource, SqsDlq } from '@aws-cdk/aws-lambda-event-sources';
+
 
 export class CdkStack extends cdk.Stack {
 
@@ -34,7 +36,7 @@ export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const s3DynamoExportBucket = new s3.Bucket(this, 'dynamoExportBucket', {
+    const s3DynamoBackupBucket = new s3.Bucket(this, 'dynamoExportBucket', {
       versioned: true,
       bucketName: 'vf-restaurant-connect-dynamo-export', 
       encryption: BucketEncryption.KMS_MANAGED,
@@ -42,6 +44,15 @@ export class CdkStack extends cdk.Stack {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.DESTROY,
     });
+
+    const ordersSaveBucket = new s3.Bucket(this, 'ordersSaveBucket', {
+      versioned: false,
+      bucketName: 'vf-rc-orders',
+      encryption: BucketEncryption.KMS_MANAGED, 
+      publicReadAccess: false,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+    })
 
     // DynamoDB orders table
     let tableName = 'Orders';
@@ -52,10 +63,10 @@ export class CdkStack extends cdk.Stack {
       },
       encryption: TableEncryption.AWS_MANAGED,
       tableName: tableName,
-      // enable back ups for putting the table in s3 for ETL.
+      // enable back ups
       pointInTimeRecovery: true,
       // enable streaming for triggers.
-      stream: StreamViewType.NEW_IMAGE,
+      stream: StreamViewType.NEW_AND_OLD_IMAGES,
     });
     // gsi for phone number lookups
     table.addGlobalSecondaryIndex({
@@ -64,6 +75,25 @@ export class CdkStack extends cdk.Stack {
       sortKey: { name: 'updatedAt', type: dynamodb.AttributeType.STRING }
     });
     this.table = table;
+
+    const streamTrigger = new lambda.Function(this, 'newOrdersTrigger', {
+      functionName: "newOrdersTrigger",
+      runtime: lambda.Runtime.NODEJS_14_X,
+      environment: {
+        S3_SAVE_BUCKET: ordersSaveBucket.bucketName,
+      },
+      code: lambda.Code.fromAsset('../packages/streamTrigger'),
+      handler: 'index.handler',
+      memorySize: 1024,
+    });
+
+    streamTrigger.addEventSource(new DynamoEventSource(table, {
+      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      batchSize: 5, 
+      bisectBatchOnError: true,
+      retryAttempts: 10
+    }));
+
 
     // S3 bucket to store terraform state for LexBots.  Why?  CDK and cloudformation don't support
     // LexBots.  But Terraform does.  So we make the competing technologies work together!

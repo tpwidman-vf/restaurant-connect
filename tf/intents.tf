@@ -192,3 +192,44 @@ resource "aws_lex_intent" "reject_intent" {
 output "reject_intent_arn" {
     value = aws_lex_intent.reject_intent.arn
 }
+
+resource "aws_lex_intent" "cancel_order_intent" {
+    name = "CancelOrderIntent"
+    sample_utterances = [ 
+        "cancel order",
+        "cancel",        
+        "cancel this pizza",
+        "cancel the order",
+        "no pizza order please",
+        "take it back",
+        "dont bring it"
+    ]
+
+    fulfillment_activity {
+      type = "ReturnIntent"
+    }
+}
+
+
+output "cancel_order_intent_arn" {
+    value = aws_lex_intent.cancel_order_intent.arn
+}
+
+#resource "aws_lex_intent" "customer_service_rep_intent" {
+#    name = "CustomerServiceRepIntent"
+#    sample_utterances = [ 
+#        "this isn't what I ordered",
+#        "zero",
+#        "agent",
+#        "this pizza stinks",
+#        "my order is wrong",
+#        "customer service",
+#        "i need help",
+#        "i would like to talk to someone",
+#        "i would like to talk to an agent",
+#        "help" 
+#    ]
+#    fulfillment_activity {
+#      type = "ReturnIntent"
+#    }
+#}

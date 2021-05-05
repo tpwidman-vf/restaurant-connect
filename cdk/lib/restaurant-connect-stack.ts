@@ -77,7 +77,7 @@ export class CdkStack extends cdk.Stack {
     });
     this.table = table;
 
-    const streamTrigger = new lambda.Function(this, 'orderAuditTrigger', {
+    const streamTrigger = new lambda.Function(this, 'newOrdersTrigger', {
       functionName: "newOrdersTrigger",
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
@@ -97,7 +97,6 @@ export class CdkStack extends cdk.Stack {
     }));
 
     ordersSaveBucket.grantReadWrite(streamTrigger);
-
 
     // S3 bucket to store terraform state for LexBots.  Why?  CDK and cloudformation don't support
     // LexBots.  But Terraform does.  So we make the competing technologies work together!
@@ -149,10 +148,22 @@ export class CdkStack extends cdk.Stack {
     table.grantReadWriteData(ordersAPILambda);
     this.ordersAPIFunction = ordersAPILambda;
 
-    new apigw.LambdaRestApi(this, 'orders', {
+    const apiGateway = new apigw.LambdaRestApi(this, 'orders', {
       handler: ordersAPILambda,
       restApiName: "ordersAPI",
       description: "API for orders database",
+    });
+
+    const cancelOrder = new lambda.Function(this, 'cancelOrder', {
+      functionName: "cancelOrder",
+      runtime: lambda.Runtime.NODEJS_14_X,
+      environment: {
+        API_ENDPOINT: apiGateway.url,
+      },
+      code: lambda.Code.fromAsset('../packages/cancelOrder'),
+      handler: 'index.handler',
+      memorySize: 1024,
+      tracing: Tracing.ACTIVE,
     });
 
     const queue = new sqs.Queue(this, 'OrderQueue', {

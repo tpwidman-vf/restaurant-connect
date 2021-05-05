@@ -37,6 +37,14 @@ resource "aws_lex_bot" "order_food_bot" {
         intent_name    = "GetFoodOrder"
         intent_version = "$LATEST"
     }
+    intent {
+        intent_name = "CancelOrderIntent"
+        intent_version = "$LATEST"
+    }
+    intent {
+        intent_name = "CustomerServiceRepIntent"
+        intent_version = "$LATEST"
+    }
 
 }
 

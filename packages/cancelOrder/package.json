@@ -1,0 +1,11 @@
+{
+  "name": "cancelorder",
+  "version": "1.0.0",
+  "description": "Cancel orders in the Restaurant connect app.",
+  "main": "local.js",
+  "scripts": {
+    "test": "true;"
+  },
+  "author": "",
+  "license": "ISC"
+}

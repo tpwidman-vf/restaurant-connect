@@ -39,8 +39,21 @@ export class OrderController {
                 const queryResult: DynamoDB.DocumentClient.QueryOutput = await this.docClient.query(queryParams).promise();
                 console.log(queryResult);
                 if(queryResult && queryResult.Count && queryResult.Count > 0 && queryResult.Items ) {
-                    // get most recent order (ordered by updated time desc)
+                    // get most recent order (ordered by updated time desc), but only if it is 
+                    // not cancelled or completed.
+                    // default to the first one, but then make sure it isn't cancelled. in a real world
+                    // scenario you'd query this way but this is just for example purposes.
                     let mostRecentOrder = queryResult.Items[0];
+                    if (!this.orderStatusOk(mostRecentOrder)) {
+                        // if the most recent order isn't in a good status, then keep digging until
+                        // we find one that is.
+                        for (let order of queryResult.Items) {
+                            if (this.orderStatusOk(order)) {
+                                mostRecentOrder = order;
+                                break;
+                            }
+                        }                    
+                    }
                     // cleanup the order status so it's read back 
                     mostRecentOrder.orderStatus = mostRecentOrder.orderStatus.replace('_', ' ');
                     return mostRecentOrder;
@@ -63,5 +76,13 @@ export class OrderController {
             );
             throw error;
         }
+    }
+
+    orderStatusOk(order: Order) : boolean {
+        let statusOk = (
+            (order.orderStatus != 'CANCELLED') &&
+            (order.orderStatus != 'COMPLETE')
+        );
+        return statusOk;
     }
 }

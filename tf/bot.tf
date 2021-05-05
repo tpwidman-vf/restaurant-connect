@@ -38,10 +38,6 @@ resource "aws_lex_bot" "order_food_bot" {
         intent_version = "$LATEST"
     }
     intent {
-        intent_name = "CancelOrderIntent"
-        intent_version = "$LATEST"
-    }
-    intent {
         intent_name = "CustomerServiceRepIntent"
         intent_version = "$LATEST"
     }
@@ -99,6 +95,10 @@ resource "aws_lex_bot" "yes_no_bot" {
     }
     intent {
         intent_name    = "RejectIntent"
+        intent_version = "$LATEST"
+    }
+    intent {
+        intent_name = "CancelOrderIntent"
         intent_version = "$LATEST"
     }
 

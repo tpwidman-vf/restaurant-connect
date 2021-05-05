@@ -202,7 +202,10 @@ resource "aws_lex_intent" "cancel_order_intent" {
         "cancel the order",
         "no pizza order please",
         "take it back",
-        "dont bring it"
+        "dont bring it",
+        "get rid of this pizza",
+        "get rid of it",
+        "three"
     ]
 
     fulfillment_activity {
